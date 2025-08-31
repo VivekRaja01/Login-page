@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibely Buzz</title>
+  <link rel="icon" href="icon.png">
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
+
+    body{
+      display:flex;justify-content:center;align-items:center;
+      min-height:100vh;overflow:hidden;position:relative;
+    }
+
+    /* Background Image with Zoom Animation */
+    body::before{
+      content:"";
+      position:fixed;
+      top:0;left:0;width:100%;height:100%;
+      background:url('bg2.jpg') no-repeat center center/cover;
+      z-index:-1;
+      animation:zoomBg 20s ease-in-out infinite alternate;
+    }
+    @keyframes zoomBg{
+      from{transform:scale(1);}
+      to{transform:scale(1.2);}
+    }
+
+    .container{
+      position:relative;width:95%;max-width:1000px;
+      background:#fff;display:flex;flex-direction:column;
+      border-radius:20px;overflow:hidden;z-index:2;
+      box-shadow:0 10px 25px rgba(0,0,0,0.2);
+      margin:20px;
+    }
+
+    /* Progress Bar */
+    .progress{
+      display:flex;justify-content:space-between;
+      align-items:center;padding:20px;background:#f8f9fa;
+      border-bottom:1px solid #ddd;flex-wrap:wrap;
+    }
+    .step{flex:1;text-align:center;position:relative;color:#999;font-size:14px;}
+    .step:before{content:"";position:absolute;top:12px;left:0;width:100%;height:2px;background:#ddd;z-index:-1;}
+    .step:first-child:before{display:none;}
+    .circle{
+      width:30px;height:30px;line-height:30px;border-radius:50%;
+      background:#ddd;color:#fff;margin:0 auto 5px;
+      font-size:14px;font-weight:bold;position:relative;
+    }
+    .active .circle{background:#2575fc;}
+    .completed .circle{background:#28a745;}
+    .completed .circle::after{content:"✔";position:absolute;left:0;right:0;text-align:center;color:#fff;}
+    .active{color:#2575fc;}
+    .completed{color:#28a745;}
+
+    .content{display:flex;flex:1;}
+
+    .left{
+      flex:1;background:url('register\ form.jpg') no-repeat center/cover;
+      padding:40px;color:rgb(243, 169, 71);display:flex;flex-direction:column;justify-content:flex-end;
+    }
+    .left h2{font-size:28px;margin-bottom:10px;text-shadow:0 2px 4px rgba(0,0,0,0.5);}
+    .left p{font-size:16px;text-shadow:0 2px 4px rgba(0,0,0,0.5);}
+
+    .right{flex:1;padding:40px;position:relative;background:#fff;}
+    .top-right{position:absolute;top:15px;right:20px;display:flex;flex-wrap:wrap;gap:10px;}
+    .top-right button{
+      background:#2575fc;color:#fff;border:none;
+      padding:8px 15px;border-radius:6px;cursor:pointer;transition:0.3s;
+    }
+    .top-right button:hover{background:#f04ae2;}
+
+    .form-page{display:none;animation:fadeIn 0.5s ease forwards;}
+    .form-page.active{display:block;}
+    @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+    .form-page h2{margin-bottom:20px;color:#2575fc;}
+
+    /* Input with icons */
+    .form-group{margin-bottom:15px;position:relative;}
+    .form-group i{
+      position:absolute;top:50%;left:12px;transform:translateY(-50%);
+      color:#888;font-size:16px;
+    }
+    .form-group input{
+      width:100%;padding:12px 12px 12px 40px;
+      border:1px solid #ccc;border-radius:6px;outline:none;font-size:14px;
+    }
+    .form-group input:focus{border-color:#e21db4;box-shadow:0 0 5px #e21db4;}
+
+    /* Eye toggle */
+    .toggle-eye{
+      position:absolute;top:50%;right:12px;transform:translateY(-50%);
+      cursor:pointer;color:#888;font-size:16px;
+    }
+
+    .btn{
+      width:100%;padding:12px;background:#2575fc;color:#fff;
+      border:none;border-radius:6px;cursor:pointer;font-size:16px;
+    }
+    .btn:hover{background:#c82597;}
+
+    .links{text-align:center;margin-top:15px;font-size:14px;}
+    .links a{color:#2575fc;text-decoration:none;font-weight:bold;}
+
+    .social-login{text-align:center;margin-top:20px;}
+    .social-login button{
+      margin:5px;padding:10px 15px;border:none;border-radius:6px;
+      cursor:pointer;color:#fff;
+        }
+        .social-login button:hover{
+          background: rgb(24, 201, 121);
+        }
+    .google{background:#db4437;}
+    .facebook{background:#4267B2;}
+    .linkedin{background:#0077b5;}
+
+    .interests{display:flex;flex-wrap:wrap;gap:10px;}
+    .interests label{background:#f1f1f1;padding:10px 15px;border-radius:20px;cursor:pointer;transition:0.3s;}
+    .interests input{display:none;}
+    .interests input:checked+span{background:rgb(2, 133, 2);color:#fff;border-radius:20px;padding:10px 15px;}
+
+    footer{margin-top:30px;text-align:center;font-size:14px;color:#666;}
+
+    /* Alerts */
+    .alert{position:fixed;top:20px;right:-300px;padding:15px 20px;border-radius:6px;color:#fff;font-weight:bold;z-index:999;transition:all 0.5s ease;}
+    .alert.show{right:20px;}
+    .alert.success{background:#28a745;}
+    .alert.warning{background:#dc3545;}
+
+    /* OTP */
+    .otp-inputs{display:flex;justify-content:center;gap:10px;margin:20px 0;}
+    .otp-inputs input{
+      width:40px;height:50px;font-size:20px;text-align:center;
+      border:1px solid #ccc;border-radius:6px;outline:none;transition:0.3s;
+    }
+    .otp-inputs input:focus{border-color:#751717;box-shadow:0 0 5px #911e2b;}
+    
+
+    /* Responsive */
+    @media(max-width:992px){
+      .container{max-width:90%;}
+      .left h2{font-size:24px;}
+    }
+    @media(max-width:768px){
+      .content{flex-direction:column;}
+      .left{display:none;}
+      .right{padding:20px;}
+      .progress{font-size:12px;}
+    }
+    @media(max-width:480px){
+      .btn{font-size:14px;padding:10px;}
+      .form-group input{font-size:13px;}
+      .otp-inputs input{width:35px;height:45px;font-size:18px;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Progress Bar -->
+  <div class="progress">
+    <div class="step active" id="step-login"><div class="circle">1</div>Login</div>
+    <div class="step" id="step-signup"><div class="circle">2</div>Signup</div>
+    <div class="step" id="step-otp"><div class="circle">3</div>OTP</div>
+    <div class="step" id="step-interests"><div class="circle">4</div>Interests</div>
+  </div>
+
+  <div class="content">
+    <!-- Left -->
+    <div class="left">
+      <h2 class="animate__animated animate__flip animate__slow">Welcome Back! Vibely🦋</h2>
+
+      <p class="animate__animated animate__fadeIn animate__slow animate__infinite">
+
+  "Welcome to Vibely – This is Your World, This is Your Passions. Share, Connect, and Explore what makes you Shine!🎨"
+</p>
+
+    </div>
+
+    <!-- Right -->
+    <div class="right">
+      <div class="top-right">
+        <button onclick="showPage('login')">Login</button>
+        <button onclick="showPage('signup')">Sign Up</button>
+      </div>
+
+      <!-- Login -->
+      <div id="login" class="form-page active">
+        <h2 class="animate__animated animate__bounce animate__infinite animate__slow" style="color:rgb(101, 16, 16);">
+  Sign In
+</h2>
+
+        <div class="form-group"><i class="fa-solid fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email"></div>
+        <div class="form-group">
+          <input type="password" id="loginPassword" placeholder="Password">
+          <i class="fa-solid fa-eye toggle-eye" onclick="togglePassword('loginPassword',this)"></i>
+        </div>
+        <div class="form-group">
+          <input type="password" id="loginConfirm" placeholder="Confirm Password">
+          <i class="fa-solid fa-eye toggle-eye" onclick="togglePassword('loginConfirm',this)"></i>
+        </div>
+        <button class="btn" onclick="login()">Sign In</button>
+        <div class="links"><a href="#">Forgot your password?</a></div>
+        <div class="social-login">
+          <button class="google"><i class="fa-brands fa-google"></i> Google</button>
+          <button class="facebook"><i class="fa-brands fa-facebook-f"></i> Facebook</button>
+          <button class="linkedin"><i class="fa-brands fa-linkedin-in"></i> LinkedIn</button>
+        </div>
+        <div class="links">Don't have an account? <a href="#" onclick="showPage('signup')">Sign Up</a></div>
+      </div>
+
+      <!-- Signup -->
+      <div id="signup" class="form-page">
+         <h2 class="animate__animated animate__bounce animate__infinite animate__slow" style="color:rgb(101, 16, 16);">
+  Sign Up
+</h2>
+        <div class="form-group"><i class="fa-solid fa-envelope"></i><input type="email" id="signEmail" placeholder="Email"></div>
+        <div class="form-group"><i class="fa-solid fa-user"></i><input type="text" id="signFirst" placeholder="First Name"></div>
+        <div class="form-group"><i class="fa-solid fa-user"></i><input type="text" id="signLast" placeholder="Last Name"></div>
+        <div class="form-group">
+          <input type="password" id="signPass" placeholder="Password">
+          <i class="fa-solid fa-eye toggle-eye" onclick="togglePassword('signPass',this)"></i>
+        </div>
+        <button class="btn" onclick="signup()">Next</button>
+        <div class="links">Already have an account? <a href="#" onclick="showPage('login')">Login</a></div>
+      </div>
+
+      <!-- OTP -->
+      <div id="otp" class="form-page">
+        <h2 class="animate__animated animate__bounce animate__infinite animate__slow" style="color:rgb(101, 16, 16);">Email Verification</h2>
+        <p>We sent you an email, please enter the 6-digit OTP below.</p>
+        <div class="otp-inputs">
+          <input type="text" maxlength="1" class="otp-box">
+          <input type="text" maxlength="1" class="otp-box">
+          <input type="text" maxlength="1" class="otp-box">
+          <input type="text" maxlength="1" class="otp-box">
+          <input type="text" maxlength="1" class="otp-box">
+          <input type="text" maxlength="1" class="otp-box">
+        </div>
+        <button class="btn" onclick="otpVerify()">Verify</button>
+        <div class="links">Didn't get code? <a href="#" onclick="showPage('login')">Resend</a></div>
+      </div>
+
+      <!-- Interests -->
+      <div id="interests" class="form-page">
+        <h2 class="animate__animated animate__bounce animate__infinite animate__slow" style="color:rgb(101, 16, 16);">Select Your PassionHub❤️</h2>
+        <div class="interests">
+          <label><input type="checkbox"><span>⚽Sports</span></label>
+          <label><input type="checkbox"><span>🤳🏻Camera</span></label>
+          <label><input type="checkbox"><span>📸Photography</span></label>
+          <label><input type="checkbox"><span>📖Stories</span></label>
+          <label><input type="checkbox"><span>📚Books</span></label>
+          <label><input type="checkbox"><span>📝Content</span></label>
+          <label><input type="checkbox"><span>🎥Videos</span></label>
+          <label><input type="checkbox"><span>⭐Stars</span></label>
+          <label><input type="checkbox"><span>🎨Design</span></label>
+          <label><input type="checkbox"><span>✈️Travel</span></label>
+          <label><input type="checkbox"><span>🌍Countries</span></label>
+          <label><input type="checkbox"><span>🎉Events</span></label>
+          <label><input type="checkbox"><span>🏨Organization</span></label>
+          <label><input type="checkbox"><span>🫒Live</span></label>
+          <label><input type="checkbox"><span>🧩Puzzles</span></label>
+          <label><input type="checkbox"><span>🐶Pets</span></label>
+        </div>
+        <button class="btn" onclick="interestsConfirm()">Done</button>
+        
+
+      <!-- Footer -->
+      <footer>
+  <p class="animate__animated animate__swing animate__slow" style="color: rgb(159, 30, 50);">
+  © 2025 MyWebsite | Created by Vivek Raja
+</p>
+
+
+      </footer>
+    </div>
+  </div>
+</div>
+
+<!-- Alerts -->
+<div id="alertBox" class="alert"></div>
+
+<script>
+  function showPage(id){
+    document.querySelectorAll('.form-page').forEach(p=>p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const steps = ["login","signup","otp","interests"];
+    steps.forEach((step,i)=>{
+      const el=document.getElementById("step-"+step);
+      el.classList.remove("active","completed");
+      if(step===id){el.classList.add("active");}
+      else if(steps.indexOf(id)>i){el.classList.add("completed");}
+    });
+  }
+
+  function showAlert(msg,type){
+    const alertBox=document.getElementById("alertBox");
+    alertBox.textContent=msg;
+    alertBox.className="alert "+type+" show";
+    setTimeout(()=>{alertBox.classList.remove("show");},3000);
+  }
+
+  function login(){
+    let email=document.getElementById("loginEmail").value.trim();
+    let pass=document.getElementById("loginPassword").value.trim();
+    let confirm=document.getElementById("loginConfirm").value.trim();
+    if(!email||!pass||!confirm){showAlert("⚠️ Please fill all fields","warning");}
+    else if(pass!==confirm){showAlert("⚠️ Passwords do not match","warning");}
+    else{showAlert("✅ Login Successful!","success");}
+  }
+
+  function signup(){
+    let email=document.getElementById("signEmail").value.trim();
+    let first=document.getElementById("signFirst").value.trim();
+    let last=document.getElementById("signLast").value.trim();
+    let pass=document.getElementById("signPass").value.trim();
+    if(!email||!first||!last||!pass){showAlert("⚠️ Please fill all fields","warning");}
+    else{showAlert("✅ Registration Successful!","success");showPage("otp");}
+  }
+
+  const otpInputs=document.querySelectorAll(".otp-box");
+  otpInputs.forEach((input,idx)=>{
+    input.addEventListener("input",()=>{if(input.value.length===1 && idx<otpInputs.length-1){otpInputs[idx+1].focus();}});
+    input.addEventListener("keydown",(e)=>{if(e.key==="Backspace" && !input.value && idx>0){otpInputs[idx-1].focus();}});
+  });
+
+  function otpVerify(){
+    let otp="";otpInputs.forEach(i=>otp+=i.value);
+    if(otp.length!==6 || /\D/.test(otp)){showAlert("⚠️ Enter valid 6-digit OTP","warning");}
+    else{showAlert("✅ OTP Verified!","success");showPage("interests");}
+  }
+
+  function interestsConfirm(){showAlert("✅ Interests Saved Successfully!","success");}
+
+  // Toggle show/hide password
+  function togglePassword(fieldId,icon){
+    const field=document.getElementById(fieldId);
+    if(field.type==="password"){
+      field.type="text";
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
+    }else{
+      field.type="password";
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+    }
+  }
+</script>
+
+</body>
+</html>
